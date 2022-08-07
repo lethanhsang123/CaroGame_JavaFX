@@ -1,5 +1,6 @@
 package com.example.javafx_tutorial;
 
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 
 public interface ICaroGame {
@@ -13,6 +14,6 @@ public interface ICaroGame {
 
     public void newGame();
 
-    public void startGame();
+    public Scene startGame();
 
 }

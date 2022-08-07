@@ -1,6 +1,7 @@
 package com.example.javafx_tutorial;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -19,7 +20,7 @@ public class CaroGame extends Application implements ICaroGame {
     User user1 = new User(1, "User1", "X");
     User user2 = new User(2, "User2", "O");
 
-    Stack<Square> list = new Stack<Square>();
+    Stack<Square> list = new Stack<>();
 
     User currentUser = user1;
 
@@ -33,13 +34,17 @@ public class CaroGame extends Application implements ICaroGame {
     @Override
     public void start(Stage primaryStage) throws FileNotFoundException {
         window = primaryStage;
-        startGame();
+        window.setTitle("Game Caro");
+
+        Scene scene1 = startGame();
+
+        window.setScene(scene1);
+        window.show();
+
     }
 
     @Override
-    public void startGame() {
-        window.setTitle("Game Caro");
-
+    public Scene startGame() {
 
         GridPane pane = new GridPane();
 
@@ -72,7 +77,7 @@ public class CaroGame extends Application implements ICaroGame {
         Button btExit = new Button();
         btExit.setText("Exit");
         btExit.setOnAction(e -> {
-            unDo();
+            Platform.exit();
         });
 
         lb.setText(currentUser.getName() + " Turn " + currentUser.getValue());
@@ -80,8 +85,8 @@ public class CaroGame extends Application implements ICaroGame {
 
 
         Scene scene1 = new Scene(pane, 600, 600);
-        window.setScene(scene1);
-        window.show();
+
+        return scene1;
     }
 
     @Override
@@ -195,11 +200,12 @@ public class CaroGame extends Application implements ICaroGame {
 
         Optional<ButtonType> result = alert.showAndWait();
 
-        if (result.get() == ButtonType.YES) {
+        if (result.get().getButtonData() == ButtonBar.ButtonData.YES) {
             System.out.println("Play Again");
             newGame();
         } else if (result.get().getButtonData() == ButtonBar.ButtonData.NO) {
-            System.out.println("Cancel");
+            System.out.println("Exit");
+            Platform.exit();
         }
     }
 
@@ -229,8 +235,8 @@ public class CaroGame extends Application implements ICaroGame {
         }
 
         currentUser = currentUser == user1 ? user2 : user1;
-        user1.setValue(user1.getValue() == "X" ? "O" : "X");
-        user2.setValue(user2.getValue() == "X" ? "O" : "X");
+        user1.setValue(user1.getValue().equals("X")  ? "O" : "X");
+        user2.setValue(user2.getValue().equals("X")  ? "O" : "X");
 
         lb.setText(currentUser.getName() + " Turn " + currentUser.getValue());
     }
